@@ -8,18 +8,17 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Configura JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+      - name: Configura JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
       - name: Configura Docker Compose
         run: |
@@ -28,9 +27,8 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
-        - name: Roda Docker Compose
-          run: docker-compose up -d
+      - name: Roda Docker Compose
+        run: docker-compose up -d
 
-        - name: Executa testes unitários
-          run: mvn -B verify
-    
+      - name: Executa testes unitários
+        run: mvn -B verify
