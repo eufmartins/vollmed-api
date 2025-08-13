@@ -41,9 +41,9 @@ jobs:
 
           docker save -o vollmed-api.tar vollmed-api_api
 
-          scp -o StrictHostKeyChecking=no -i alura-curso2.pem vollmed-api.tar $USER@HOST: /home/ubuntu/
-          scp -o StrictHostKeyChecking=no -i alura-curso2.pem init.sql $USER@HOST: /home/ubuntu/
-          scp -o StrictHostKeyChecking=no -i alura-curso2.pem docker-compose-prod.yaml $USER@HOST: /home/ubuntu/
-          scp -o StrictHostKeyChecking=no -i alura-curso2.pem script-deploy.sh $USER@HOST: /home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem vollmed-api.tar ${USER}@${HOST}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem init.sql ${USER}@${HOST}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem docker-compose-prod.yaml ${USER}@${HOST}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem script-deploy.sh ${USER}@${HOST}:/home/ubuntu/
 
           ssh -i alura-curso2.pem $USER@$HOST "chmod +x script-deploy.sh && ./script-deploy.sh"
