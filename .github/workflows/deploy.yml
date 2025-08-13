@@ -1,0 +1,47 @@
+name: Deploy Voll Med
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configura JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build e subir containers com Docker Compose
+        run: docker compose up -d --build
+
+      - name: Deploy para EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          USER: ubuntu
+          HOST: 34.220.38.134
+        run: |
+          # Salva chave privada
+          echo "$PRIVATE_KEY" > alura-curso2.pem
+          chmod 600 alura-curso2.pem
+
+          # Exporta a imagem do serviço
+          docker save -o vollmed-api.tar vollmed-api_api
+
+          # Envia arquivos para a EC2
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem vollmed-api.tar ${USER}@${HOST}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem init.sql ${USER}@${HOST}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem docker-compose-prod.yaml ${USER}@${HOST}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i alura-curso2.pem script-deploy.sh ${USER}@${HOST}:/home/ubuntu/
+
+          # Executa script remoto na EC2
+          ssh -o StrictHostKeyChecking=no -i alura-curso2.pem ${USER}@${HOST} "chmod +x script-deploy.sh && ./script-deploy.sh"
