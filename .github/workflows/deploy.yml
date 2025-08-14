@@ -34,7 +34,7 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
           USER: ubuntu
-          HOST: 34.212.106.24
+          HOST: 35.93.206.195
         run:  |
           echo "$PRIVATE_KEY" > alura-curso2.pem
           chmod 600 alura-curso2.pem
